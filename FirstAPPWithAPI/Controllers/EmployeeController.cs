@@ -1,7 +1,9 @@
 ﻿using FirstAPPWithAPI.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace FirstAPPWithAPI.Controllers
@@ -18,47 +20,47 @@ namespace FirstAPPWithAPI.Controllers
         }
         [HttpGet]
         [Route("")]
-        public ActionResult <IEnumerable<Employee>> GetAll()
-        {           
-            var record = _dbContext.Set<Employee>().ToList;
+        public async Task <ActionResult<IEnumerable<Employee>>> GetAll()
+        {
+            var record = await _dbContext.Set<Employee>().ToListAsync();
             return Ok(record);
         }
         [HttpGet]
         [Route("id")]
-        public ActionResult <Employee> Get(int Id)
+        public async Task<ActionResult <Employee>> Get(int Id)
         {
-            var record = _dbContext.Set<Employee>().Find(Id);
+            var record = await _dbContext.Set<Employee>().FindAsync(1);
             return record == null ? NotFound() : Ok(record);
         }
         [HttpPost]
         [Route("")]
-        public ActionResult CreateRecord(Employee employee)
+        public async Task<ActionResult> CreateRecord(Employee employee)
         {
             if (employee==null)
                 Console.WriteLine("Invalid");
             else
-            _dbContext.Set<Employee>().Add(employee);
-            _dbContext.SaveChanges();
+             await _dbContext.Set<Employee>().AddAsync(employee);
+            await _dbContext.SaveChangesAsync();
             return Ok();
         }
         [HttpPut]
         [Route("")]
-        public ActionResult UpdateData(Employee employee)
+        public async Task <ActionResult> UpdateData(Employee employee)
         {
-            var ExistingEmp = _dbContext.Set<Employee>().Find(employee.Id);
+            var ExistingEmp = await _dbContext.Set<Employee>().FindAsync(employee.Id);
             ExistingEmp!.FirstName = employee.FirstName;
             ExistingEmp.Location = employee.Location;
-            _dbContext.Set<Employee>().Update(ExistingEmp);
-            _dbContext.SaveChanges();
+           _dbContext.Set<Employee>().Update(ExistingEmp);
+            await _dbContext.SaveChangesAsync();
             return Ok();
         }
         [HttpDelete]
         [Route("{id}")]
-        public ActionResult DeleteData( int id )
+        public async Task<ActionResult> DeleteData( int id )
         {
-            var ExistingEmp = _dbContext.Set<Employee>().Find(id);
+            var ExistingEmp = await _dbContext.Set<Employee>().FindAsync(id);
             _dbContext.Set<Employee>().Remove(ExistingEmp!);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             return Ok();
         }
     }
