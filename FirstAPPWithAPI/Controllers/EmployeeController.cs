@@ -16,6 +16,31 @@ namespace FirstAPPWithAPI.Controllers
         {
             _dbContext = dbContext;
         }
+        [HttpGet]
+        [Route("")]
+        public ActionResult <IEnumerable<Employee>> GetAll()
+        {           
+            var record = _dbContext.Set<Employee>().ToList;
+            return Ok(record);
+        }
+        [HttpGet]
+        [Route("id")]
+        public ActionResult <Employee> Get(int Id)
+        {
+            var record = _dbContext.Set<Employee>().Find(Id);
+            return record == null ? NotFound() : Ok(record);
+        }
+        [HttpPost]
+        [Route("")]
+        public ActionResult CreateRecord(Employee employee)
+        {
+            if (employee==null)
+                Console.WriteLine("Invalid");
+            else
+            _dbContext.Set<Employee>().Add(employee);
+            _dbContext.SaveChanges();
+            return Ok();
+        }
         [HttpPut]
         [Route("")]
         public ActionResult UpdateData(Employee employee)
@@ -28,14 +53,13 @@ namespace FirstAPPWithAPI.Controllers
             return Ok();
         }
         [HttpDelete]
-        [Route("")]
-        public ActionResult deleteData( int id )
+        [Route("{id}")]
+        public ActionResult DeleteData( int id )
         {
             var ExistingEmp = _dbContext.Set<Employee>().Find(id);
             _dbContext.Set<Employee>().Remove(ExistingEmp!);
             _dbContext.SaveChanges();
             return Ok();
         }
-
     }
 }
