@@ -1,4 +1,5 @@
 using FirstAPPWithAPI.Data;
+using FirstAPPWithAPI.MiddleWares;
 using Microsoft.EntityFrameworkCore;
 
 namespace FirstAPPWithAPI
@@ -15,12 +16,13 @@ namespace FirstAPPWithAPI
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddEndpointsApiExplorer();
-
+ 
             builder.Services.AddSwaggerGen();
+
+            builder.Configuration.AddUserSecrets<Program>();
             var ConnectionString = builder.Configuration.GetConnectionString("constr");
             builder.Services.AddDbContext<AppdbContext>(options =>
                 options.UseSqlServer(ConnectionString));
-            Console.WriteLine(ConnectionString);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -30,10 +32,10 @@ namespace FirstAPPWithAPI
                 app.UseSwaggerUI();
                 app.MapOpenApi();
             }
-
+            app.UseMiddleware<ProfilingMiddleWare>();
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseAuthorization(); 
 
             app.MapControllers();
 

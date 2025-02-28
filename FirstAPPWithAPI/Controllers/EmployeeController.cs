@@ -27,9 +27,9 @@ namespace FirstAPPWithAPI.Controllers
         }
         [HttpGet]
         [Route("id")]
-        public async Task<ActionResult <Employee>> Get(int Id)
+        public async Task<ActionResult <Employee>> GetByID(int Id)
         {
-            var record = await _dbContext.Set<Employee>().FindAsync(1);
+            var record = await _dbContext.Set<Employee>().FindAsync(Id);
             return record == null ? NotFound() : Ok(record);
         }
         [HttpPost]
