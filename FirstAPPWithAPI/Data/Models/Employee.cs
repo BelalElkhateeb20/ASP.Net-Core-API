@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace FirstAPPWithAPI.Data;
+namespace FirstAPPWithAPI.Data.Models;
 
 [Table("EFCoreModeling")]
 public partial class Employee
@@ -48,4 +48,7 @@ public partial class Employee
 
     [StringLength(50)]
     public string CarModel { get; set; } = null!;
+    [ForeignKey("DepartMent")]
+    public int? DepartmentID { get; set; }
+    public Departments? departments { get; set; }//allow employee dose't have department
 }
