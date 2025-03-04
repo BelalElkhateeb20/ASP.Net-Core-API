@@ -1,11 +1,7 @@
-﻿namespace FirstAPPWithAPI.Data.Models
+﻿namespace FirstAPI.DTOs
 {
-    using System.ComponentModel.DataAnnotations;
-    [Table("Movies", Schema = "Mov")]
-    public class Movie
+    public class MoviesDto
     {
-        public int Id { get; set; }
-
         [MaxLength(250)]
 
         public string Title { get; set; }
@@ -17,10 +13,9 @@
         [MaxLength(2500)]
         public string Storeline { get; set; }
 
-        public byte[] Poster { get; set; }
+        public IFormFile Poster { get; set; }
 
         public byte GenreId { get; set; }
 
-        public Genre Genre { get; set; }
     }
 }

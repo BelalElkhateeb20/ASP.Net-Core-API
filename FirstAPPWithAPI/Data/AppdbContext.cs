@@ -14,6 +14,7 @@ public partial class AppdbContext : DbContext
     }
     public DbSet<Employee> employees { get; set; }
     public DbSet<Genre> genres { get; set; }
+    public DbSet<Movie> movies { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

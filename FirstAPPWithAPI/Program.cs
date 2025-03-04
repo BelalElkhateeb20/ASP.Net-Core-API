@@ -1,3 +1,4 @@
+using FirstAPI.Serviece;
 using FirstAPPWithAPI.Data;
 //using FirstAPPWithAPI.MiddleWares;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,7 +50,7 @@ namespace FirstAPPWithAPI
             builder.Services.AddLogging(cfg => cfg.AddDebug());
 
             builder.Services.AddHttpContextAccessor();
-
+            builder.Services.AddScoped< IGenresServiece, GenresServiece>();
             var app = builder.Build();
             if (app.Environment.IsDevelopment())
             {
@@ -61,7 +62,6 @@ namespace FirstAPPWithAPI
             app.UseHttpsRedirection();
             app.UseCors(op => op.AllowAnyHeader().AllowAnyOrigin());//cors
             app.UseAuthorization();
-
             app.MapControllers();
 
             app.Run();

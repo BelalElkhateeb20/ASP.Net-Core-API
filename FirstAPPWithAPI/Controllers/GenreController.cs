@@ -1,9 +1,9 @@
 ﻿using FirstAPI.DTOs;
+using FirstAPI.Serviece;
 using FirstAPPWithAPI.Data;
 using FirstAPPWithAPI.Data.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstAPI.Controllers
 {
@@ -11,51 +11,57 @@ namespace FirstAPI.Controllers
     [ApiController]
     public class GenreController : ControllerBase
     {
-        private readonly AppdbContext _dbcontext;
+        private readonly IGenresServiece _genresServiece;
 
-        public GenreController(AppdbContext context)
+        public GenreController(IGenresServiece genresServiece)
         {
-            this._dbcontext = context;
+            this._genresServiece = genresServiece;
         }
         [HttpPost]
         [Route("")]
-        public async Task <IActionResult> AddAsync(GenreDto dto)
+        public async Task <IActionResult> AddAsync(Genre dto)
         {
-            var genre = new Genre
-            {
-                Name = dto.Name
-            };
-            await _dbcontext.AddAsync(genre);
-            await _dbcontext.SaveChangesAsync();
-            return Ok();
+            var genre = new Genre{ Name = dto.Name};
+            await _genresServiece.Add(genre);
+            return Ok(genre);
         }
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var result=await _dbcontext.Set<Genre>().OrderBy(or=>or.Name).ToListAsync();
-            return Ok(result);
+            var record= await _genresServiece.GetAll();
+            return Ok(record);
         }
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetByID(byte Id)
+        { 
+            await _genresServiece.GetByID(Id);
+            if (_genresServiece.GetByID(Id)==null)
+            {
+                return NotFound();
+            }
+            return Ok();
+        }
+
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> updateAsync(int id, [FromBody] GenreDto dto)
+        public async Task<IActionResult> updateAsync(byte id, [FromBody] GenreDto dto)
         {
-            var genre =await _dbcontext.genres.SingleOrDefaultAsync(x => x.Id == id);
+            var genre = await _genresServiece.GetByID(id);
             if (genre == null)
                 return NotFound($"Genre Not Found With ID {id} ");
             genre.Name = dto.Name;
-            await _dbcontext.SaveChangesAsync();
             return Ok(genre);
         }
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(byte id)
         {
-            var genre =await _dbcontext.genres.SingleOrDefaultAsync(x => x.Id == id);
+            var genre = await _genresServiece.GetByID(id);
             if (genre == null)
                 return NotFound($"Genre Not Found With ID {id} ");
-             _dbcontext.genres.Remove(genre);
-            await _dbcontext.SaveChangesAsync();
+
             return Ok();
         }
     }
