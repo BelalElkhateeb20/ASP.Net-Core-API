@@ -4,7 +4,6 @@ using FirstAPPWithAPI.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 namespace FirstAPI.Controllers
 {
@@ -34,8 +33,30 @@ namespace FirstAPI.Controllers
         [Route("")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var result=await _dbcontext.Set<Genre>().ToListAsync();
+            var result=await _dbcontext.Set<Genre>().OrderBy(or=>or.Name).ToListAsync();
             return Ok(result);
+        }
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> updateAsync(int id, [FromBody] GenreDto dto)
+        {
+            var genre =await _dbcontext.genres.SingleOrDefaultAsync(x => x.Id == id);
+            if (genre == null)
+                return NotFound($"Genre Not Found With ID {id} ");
+            genre.Name = dto.Name;
+            await _dbcontext.SaveChangesAsync();
+            return Ok(genre);
+        }
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            var genre =await _dbcontext.genres.SingleOrDefaultAsync(x => x.Id == id);
+            if (genre == null)
+                return NotFound($"Genre Not Found With ID {id} ");
+             _dbcontext.genres.Remove(genre);
+            await _dbcontext.SaveChangesAsync();
+            return Ok();
         }
     }
 }

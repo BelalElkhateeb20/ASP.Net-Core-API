@@ -1,12 +1,9 @@
 using FirstAPPWithAPI.Data;
 //using FirstAPPWithAPI.MiddleWares;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Formatting.Compact;
-using System;
-
 
 namespace FirstAPPWithAPI
 {

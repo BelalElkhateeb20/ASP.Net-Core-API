@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-namespace FirstAPPWithAPI.Data.Models
+﻿namespace FirstAPPWithAPI.Data.Models
 {
     
     //by default all properties is Requierd
