@@ -2,9 +2,8 @@
 {
     using FirstAPPWithAPI.Data.Models;
 
-    public class MovieDetailsDto
+    public class MovieDetailsDto//For [Get],
     {
-        public int Id { get; set; }
 
         [MaxLength(250)]
 

@@ -1,4 +1,5 @@
-﻿using FirstAPI.DTOs;
+﻿using AutoMapper;
+using FirstAPI.DTOs;
 using FirstAPI.Serviece;
 using FirstAPPWithAPI.Data;
 using FirstAPPWithAPI.Data.Models;
@@ -13,18 +14,23 @@ namespace FirstAPI.Controllers
         private long _maxPosterSize = 1048576;
         private List<string> allowed_Extensions = new List<string> { ".jpg", ".png", ".jpeg" };
         private readonly IMovieServiece _movieServiece;
+        private readonly IGenresServiece genresServiece;
+        private readonly IMapper _mapper;
 
-        public MoviesController(IMovieServiece movieServiece)
+        public MoviesController(IMovieServiece movieServiece, IGenresServiece genresServiece, IMapper mapper)
         {
             this._movieServiece = movieServiece;
+            this.genresServiece = genresServiece;
+            this._mapper = mapper;
         }
 
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> GetAllAsync()
         {
-            await _movieServiece.GetAll();
-            return Ok();
+            var movie = await _movieServiece.GetAll();
+            var dto = _mapper.Map<IEnumerable<MoviesDto>>(movie);
+            return Ok(dto);
         }
 
         [HttpGet]
@@ -34,17 +40,7 @@ namespace FirstAPI.Controllers
             var movie = await _movieServiece.GetByID(id);
             if (movie == null)
                 return NotFound("Movie Not Found!");
-            var dto = new MovieDetailsDto
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                Year = movie.Year,
-                Rate = movie.Rate,
-                Storeline = movie.Storeline,
-                Poster = movie.Poster,
-                GenreId = movie.GenreId,
-                GenreName = movie.Genre.Name
-            };
+            var dto = _mapper.Map<MoviesDto>(movie);
             return Ok(dto);
         }
 
@@ -53,22 +49,13 @@ namespace FirstAPI.Controllers
         public async Task<IActionResult> GetMovieByGenreIDAsync(byte genreid)
         {
 
-          
-                //If you want to exclue the GenreID use include exMethod
-                //otherwise you can use select method to select the fields you want
-
-                /*.Select(s => new MovieDetailsDto
-                {
-                    Id = s.Id,
-                    Title = s.Title,
-                    Year = s.Year,
-                    Rate = s.Rate,
-                    Storeline = s.Storeline,
-                    Poster = s.Poster,
-                    GenreName = s.Genre.Name
-                })*/
-                
-            return Ok();
+            var movies = await _movieServiece.GetAll(genreid);
+            //If you want to exclue the GenreID use include exMethod
+            //otherwise you can use select method to select the fields you want
+            if(movies == null)
+                return NotFound("No Movies Found!");
+            var dto =  _mapper.Map<IEnumerable<MoviesDto>>(movies);
+            return Ok(dto);
         }
 
         [HttpPost]
@@ -79,23 +66,15 @@ namespace FirstAPI.Controllers
                 return BadRequest("Invalid Poster Extension!");
             if (dto.Poster.Length > _maxPosterSize)
                 return BadRequest("Poster Size is too large!");
-            var isvalidGenre = await _dbcontext.movies.AnyAsync(x => x.Id == dto.GenreId);
+            var isvalidGenre = await genresServiece.IsValidGenre(dto.GenreId);
             if (!isvalidGenre)
                 return BadRequest("Invalid Genre!");
             using var datastream = new MemoryStream();
             await dto.Poster.CopyToAsync(datastream);
-            var movie = new Movie
-            {
-                Year = dto.Year,
-                Rate = dto.Rate,
-                Title = dto.Title,
-                Storeline = dto.Storeline,
-                Poster = datastream.ToArray(),
-                GenreId = dto.GenreId
-            };
-
+            var movie = _mapper.Map<Movie>(dto);
+            movie.Poster = datastream.ToArray();
+            await _movieServiece.Add(movie);
             return Ok();
         }
-
     }
-}
+}   

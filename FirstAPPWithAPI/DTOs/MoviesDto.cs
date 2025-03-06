@@ -1,6 +1,6 @@
 ﻿namespace FirstAPI.DTOs
 {
-    public class MoviesDto
+    public class MoviesDto //use this for [post]
     {
         [MaxLength(250)]
 
@@ -16,6 +16,7 @@
         public IFormFile Poster { get; set; }
 
         public byte GenreId { get; set; }
+        //public bool isQualified => Rate > 7.5;
 
     }
 }

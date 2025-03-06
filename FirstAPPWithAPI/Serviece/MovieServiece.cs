@@ -2,6 +2,7 @@
 {
     using FirstAPPWithAPI.Data;
     using FirstAPPWithAPI.Data.Models;
+    using Microsoft.AspNetCore.Http.HttpResults;
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -16,29 +17,28 @@
         }
         public async Task<Movie> Add(Movie movie)
         {
-           
             await _dbcontext.AddAsync(movie);
             await _dbcontext.SaveChangesAsync();
             return movie;
         }
 
-        public Task<Movie> GetByID(int id)
+        public async Task<Movie> GetByID(int id)
         {
-            throw new NotImplementedException();
+            var movie = await _dbcontext.movies.FindAsync(id);
+            return movie!;
         }
 
-        public async Task<IEnumerable<Movie>> GetMovieByGenreID(byte genreid)
-        {
-            var movies = await _dbcontext.movies.Where(g => g.GenreId == genreid).Include(i => i.Genre).ToListAsync();
-            return movies;
-        }
-
-        public async Task<IEnumerable<Movie>> GetAll()
+        public async Task<IEnumerable<Movie>> GetAll(byte genreId = 0)
         {
             var movies = await _dbcontext.movies
+                .Where(w => w.GenreId == genreId || genreId == 0)
+                .OrderByDescending(or => or.Rate)
                 .Include(i => i.Genre)
-                .OrderByDescending(or => or.Rate).ToListAsync();
+                .ToListAsync();
             return movies;
         }
+
+
+    
     }
 }

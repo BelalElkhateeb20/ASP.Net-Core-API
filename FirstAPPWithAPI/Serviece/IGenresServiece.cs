@@ -5,6 +5,7 @@
     public interface IGenresServiece
     {
         Task<Genre> Add(Genre genre);
+        Task <bool> IsValidGenre(byte id);
         Task<IEnumerable<Genre>> GetAll();
         Task<Genre> GetByID(byte id);
         Genre Update(Genre genre);

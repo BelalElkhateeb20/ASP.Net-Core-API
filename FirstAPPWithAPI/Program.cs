@@ -1,9 +1,9 @@
+using FirstAPI.Mappings;
 using FirstAPI.Serviece;
 using FirstAPPWithAPI.Data;
-//using FirstAPPWithAPI.MiddleWares;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using AutoMapper;
 using Serilog.Formatting.Compact;
 
 namespace FirstAPPWithAPI
@@ -41,6 +41,9 @@ namespace FirstAPPWithAPI
                     },
                 });
             });
+            builder.Services.AddAutoMapper(typeof(Program));
+
+
             builder.Services.AddCors();
             builder.Configuration.AddUserSecrets<Program>();
 
@@ -50,8 +53,10 @@ namespace FirstAPPWithAPI
             builder.Services.AddLogging(cfg => cfg.AddDebug());
 
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddScoped< IGenresServiece, GenresServiece>();
+            builder.Services.AddScoped<IGenresServiece, GenresServiece>();
+            builder.Services.AddScoped<IMovieServiece, MovieServiece>();
             var app = builder.Build();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

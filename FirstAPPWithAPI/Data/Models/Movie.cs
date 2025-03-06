@@ -18,6 +18,7 @@
         public string Storeline { get; set; }
 
         public byte[] Poster { get; set; }
+        public bool isQualified { get; set; }
 
         public byte GenreId { get; set; }
 
