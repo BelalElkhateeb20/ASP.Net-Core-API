@@ -1,5 +1,6 @@
 ﻿namespace FirstAPI.Serviece
 {
+    using FirstAPI.DTOs;
     using FirstAPPWithAPI.Data.Models;
     using System.Collections;
 
@@ -10,6 +11,7 @@
 
         //Task<IEnumerable<Movie>> GetMovieByGenreID(byte genreid);
         Task<Movie> Add(Movie movie);
+        Task<Movie> Update(int id, MovieDetailsDto detailsDto);
 
 
 

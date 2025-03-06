@@ -2,7 +2,7 @@
 {
     using FirstAPPWithAPI.Data.Models;
 
-    public class MovieDetailsDto//For [Get],
+    public class MovieDetailsDto//,[Put]
     {
 
         [MaxLength(250)]
@@ -15,9 +15,6 @@
 
         [MaxLength(2500)]
         public string Storeline { get; set; }
-
-        public byte GenreId { get; set; }
-        public byte[] Poster { get; set; }
-        public string GenreName { get; set; }
+        public IFormFile Poster { get; set; }
     }
 }

@@ -16,7 +16,7 @@
         public IFormFile Poster { get; set; }
 
         public byte GenreId { get; set; }
-        //public bool isQualified => Rate > 7.5;
+        
 
     }
 }

@@ -20,6 +20,7 @@ public partial class AppdbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Ignore<Employee>();
+
     }
 
     

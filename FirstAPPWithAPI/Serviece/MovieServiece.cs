@@ -1,5 +1,6 @@
 ﻿namespace FirstAPI.Serviece
 {
+    using FirstAPI.DTOs;
     using FirstAPPWithAPI.Data;
     using FirstAPPWithAPI.Data.Models;
     using Microsoft.AspNetCore.Http.HttpResults;
@@ -38,7 +39,16 @@
             return movies;
         }
 
-
-    
+        public async Task<Movie> Update(int id, MovieDetailsDto detailsDto)
+        {
+            var movie = await _dbcontext.movies.FindAsync(id);
+            movie!.Title = detailsDto.Title;
+            movie.Year = detailsDto.Year;
+            movie.Rate = detailsDto.Rate;
+            movie.Storeline = detailsDto.Storeline;
+            _dbcontext.movies.Update(movie);
+            await _dbcontext.SaveChangesAsync();
+            return movie;
+        }
     }
 }

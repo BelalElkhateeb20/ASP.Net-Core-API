@@ -42,6 +42,7 @@ namespace FirstAPPWithAPI
                 });
             });
             builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
             builder.Services.AddCors();

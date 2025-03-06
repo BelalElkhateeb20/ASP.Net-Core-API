@@ -43,7 +43,7 @@
 
         public Task <bool> IsValidGenre(byte id)
         {
-            return  _dbcontext.movies.AnyAsync(x => x.Id == id);
+            return _dbcontext.genres.AnyAsync(x => x.Id == id);
         }
 
         public  Genre Update(Genre genre)

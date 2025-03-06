@@ -76,5 +76,16 @@ namespace FirstAPI.Controllers
             await _movieServiece.Add(movie);
             return Ok();
         }
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromForm]MovieDetailsDto dto)
+        {
+            using var datastream = new MemoryStream();
+            await dto.Poster.CopyToAsync(datastream);
+            var movie = _mapper.Map<Movie>(dto);
+            await _movieServiece.Update(id, dto);
+            movie.Poster = datastream.ToArray();
+            return Ok(movie);
+        }
     }
 }   
