@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using FirstAPI.Data.IdentityMangement;
 using FirstAPPWithAPI.Data.Models;
-using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 namespace FirstAPPWithAPI.Data;
-
-public partial class AppdbContext : DbContext
+public partial class AppdbContext : IdentityDbContext<ApplicationUser>
 {
-    public AppdbContext(DbContextOptions<AppdbContext> options)
-        : base(options)
+    public AppdbContext(DbContextOptions<AppdbContext> options) : base(options)
     {
 
     }
@@ -19,9 +17,7 @@ public partial class AppdbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.Ignore<Employee>();
-
     }
-
-    
 }

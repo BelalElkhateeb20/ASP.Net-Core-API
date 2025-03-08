@@ -2,9 +2,8 @@ using FirstAPI.Mappings;
 using FirstAPI.Serviece;
 using FirstAPPWithAPI.Data;
 using Microsoft.OpenApi.Models;
-using Serilog;
-using AutoMapper;
-using Serilog.Formatting.Compact;
+using FirstAPI.Data.IdentityMangement;
+using Microsoft.AspNetCore.Identity;
 
 namespace FirstAPPWithAPI
 {
@@ -17,7 +16,7 @@ namespace FirstAPPWithAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
             builder.Services.AddOpenApi();
             builder.Services.AddEndpointsApiExplorer();
 
@@ -41,9 +40,10 @@ namespace FirstAPPWithAPI
                     },
                 });
             });
-            builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddAutoMapper(typeof(MappingProfile));
-
+            //builder.Services.AddAutoMapper(typeof(MappingForMovieDto));
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppdbContext>();
 
             builder.Services.AddCors();
             builder.Configuration.AddUserSecrets<Program>();
@@ -51,8 +51,6 @@ namespace FirstAPPWithAPI
             var ConnectionString = builder.Configuration.GetConnectionString("constr");
             builder.Services.AddDbContext<AppdbContext>(options =>
                 options.UseSqlServer(ConnectionString));
-            builder.Services.AddLogging(cfg => cfg.AddDebug());
-
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IGenresServiece, GenresServiece>();
             builder.Services.AddScoped<IMovieServiece, MovieServiece>();
@@ -64,7 +62,6 @@ namespace FirstAPPWithAPI
                 app.UseSwaggerUI();
                 app.MapOpenApi();
             }
-            //app.UseMiddleware<ProfilingMiddleWare>();
             app.UseHttpsRedirection();
             app.UseCors(op => op.AllowAnyHeader().AllowAnyOrigin());//cors
             app.UseAuthorization();

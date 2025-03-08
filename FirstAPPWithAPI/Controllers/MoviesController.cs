@@ -3,27 +3,37 @@ using FirstAPI.DTOs;
 using FirstAPI.Serviece;
 using FirstAPPWithAPI.Data;
 using FirstAPPWithAPI.Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace FirstAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MoviesController : ControllerBase
+    public class MoviesController(IMovieServiece movieServiece, IGenresServiece genresServiece, IMapper mapper) : ControllerBase
     {
 
         private long _maxPosterSize = 1048576;
         private List<string> allowed_Extensions = new List<string> { ".jpg", ".png", ".jpeg" };
-        private readonly IMovieServiece _movieServiece;
-        private readonly IGenresServiece genresServiece;
-        private readonly IMapper _mapper;
+        private readonly IMovieServiece _movieServiece = movieServiece;
+        private readonly IGenresServiece genresServiece = genresServiece;
+        private readonly IMapper _mapper = mapper;
 
-        public MoviesController(IMovieServiece movieServiece, IGenresServiece genresServiece, IMapper mapper)
-        {
-            this._movieServiece = movieServiece;
-            this.genresServiece = genresServiece;
-            this._mapper = mapper;
-        }
+        //[HttpPost]
+        //[Route("Login")]
+        //public async Task<IActionResult> LoginAsync(LoginUserDto UserDto)
+        //{
+        //    if(ModelState.IsValid)
+        //    {
+        //        //Check and create a token
+                
 
+        //    }
+        //    else
+        //    {
+        //        return Unauthorized();
+        //    }
+
+        //}
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> GetAllAsync()
@@ -40,7 +50,10 @@ namespace FirstAPI.Controllers
             var movie = await _movieServiece.GetByID(id);
             if (movie == null)
                 return NotFound("Movie Not Found!");
+            using var datastream = new MemoryStream();
             var dto = _mapper.Map<MoviesDto>(movie);
+            await dto.Poster.CopyToAsync(datastream);
+            movie.Poster = datastream.ToArray();
             return Ok(dto);
         }
 
@@ -80,6 +93,10 @@ namespace FirstAPI.Controllers
         [Route("{id}")]
         public async Task<IActionResult> UpdateAsync(int id, [FromForm]MovieDetailsDto dto)
         {
+            if (allowed_Extensions.Contains(Path.GetExtension(dto.Poster.FileName).ToUpper()))
+                return BadRequest("Invalid Poster Extension!");
+            if (dto.Poster.Length > _maxPosterSize)
+                return BadRequest("Poster Size is too large!");
             using var datastream = new MemoryStream();
             await dto.Poster.CopyToAsync(datastream);
             var movie = _mapper.Map<Movie>(dto);
