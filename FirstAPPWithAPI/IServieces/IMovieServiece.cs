@@ -1,4 +1,4 @@
-﻿namespace FirstAPI.Serviece
+﻿namespace FirstAPI.IServieces
 {
     using FirstAPI.DTOs;
     using FirstAPPWithAPI.Data.Models;

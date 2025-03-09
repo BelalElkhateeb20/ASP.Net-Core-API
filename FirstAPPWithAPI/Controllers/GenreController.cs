@@ -1,5 +1,5 @@
 ﻿using FirstAPI.DTOs;
-using FirstAPI.Serviece;
+using FirstAPI.IServieces;
 using FirstAPPWithAPI.Data;
 using FirstAPPWithAPI.Data.Models;
 using Microsoft.AspNetCore.Mvc;

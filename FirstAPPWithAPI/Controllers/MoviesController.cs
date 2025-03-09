@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using FirstAPI.DTOs;
-using FirstAPI.Serviece;
+using FirstAPI.IServieces;
 using FirstAPPWithAPI.Data;
 using FirstAPPWithAPI.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace FirstAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MoviesController(IMovieServiece movieServiece, IGenresServiece genresServiece, IMapper mapper) : ControllerBase
@@ -18,22 +20,6 @@ namespace FirstAPI.Controllers
         private readonly IGenresServiece genresServiece = genresServiece;
         private readonly IMapper _mapper = mapper;
 
-        //[HttpPost]
-        //[Route("Login")]
-        //public async Task<IActionResult> LoginAsync(LoginUserDto UserDto)
-        //{
-        //    if(ModelState.IsValid)
-        //    {
-        //        //Check and create a token
-                
-
-        //    }
-        //    else
-        //    {
-        //        return Unauthorized();
-        //    }
-
-        //}
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> GetAllAsync()
