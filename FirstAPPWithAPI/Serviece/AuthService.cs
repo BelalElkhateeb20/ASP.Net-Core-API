@@ -6,8 +6,6 @@
     using FirstAPI.IServieces;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.IdentityModel.Tokens;
-    using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-    using System.Configuration;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Text;
@@ -56,7 +54,7 @@
             var claims = new List<Claim>{
             new (ClaimTypes.Name, user.UserName!),
             new (ClaimTypes.NameIdentifier, user.Id),
-            new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())};  //refresh token
+            new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())}; 
             SecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
             SigningCredentials signingCredentials = new (securityKey, SecurityAlgorithms.HmacSha256);
             JwtSecurityToken mytoken = new(

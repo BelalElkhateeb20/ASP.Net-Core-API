@@ -76,5 +76,14 @@ namespace FirstAPPWithAPI.Controllers
             await _dbContext.SaveChangesAsync();
             return Ok();
         }
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DData( int id )
+        {
+            var ExistingEmp = await _dbContext.Set<Employee>().FindAsync(id);
+            _dbContext.Set<Employee>().Remove(ExistingEmp!);
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
